@@ -133,33 +133,33 @@ const feedPosts = [
 function SocialFeed() {
   return (
     <PhoneFrame>
-      {/* Stories bar */}
-      <div className="flex gap-3 overflow-x-auto border-b border-[var(--color-border)] px-4 py-3">
-        {['You', 'Sarah', 'Mike', 'Lisa', 'Tom'].map((s) => (
-          <div key={s} className="flex flex-col items-center gap-1">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-neon-blue)] p-0.5">
-              <div className="flex h-full w-full items-center justify-center rounded-full bg-white text-xs font-bold text-[var(--color-accent)]">{s[0]}</div>
+      <div className="flex h-full flex-col bg-white">
+        <div className="flex gap-3 overflow-x-auto border-b border-[var(--color-border)] px-4 py-3">
+          {['You', 'Sarah', 'Mike', 'Lisa', 'Tom'].map((s) => (
+            <div key={s} className="flex flex-col items-center gap-1">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-neon-blue)] p-0.5">
+                <div className="flex h-full w-full items-center justify-center rounded-full bg-white text-xs font-bold text-[var(--color-accent)]">{s[0]}</div>
+              </div>
+              <span className="text-[10px] text-[var(--color-text-secondary)]">{s}</span>
             </div>
-            <span className="text-[10px] text-[var(--color-text-secondary)]">{s}</span>
-          </div>
-        ))}
-      </div>
-      {/* Posts */}
-      <div className="divide-y divide-[var(--color-border)]">
-        {feedPosts.map((post) => (
-          <div key={post.user} className="p-4">
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-full" style={{ background: post.color }} />
-              <span className="text-sm font-semibold text-[var(--color-text-primary)]">{post.user}</span>
-              <span className="ml-auto text-xs text-[var(--color-text-muted)]">2h</span>
+          ))}
+        </div>
+        <div className="flex-1 overflow-y-auto divide-y divide-[var(--color-border)]">
+          {feedPosts.map((post) => (
+            <div key={post.user} className="p-4">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-8 rounded-full" style={{ background: post.color }} />
+                <span className="text-sm font-semibold text-[var(--color-text-primary)]">{post.user}</span>
+                <span className="ml-auto text-xs text-[var(--color-text-muted)]">2h</span>
+              </div>
+              <p className="mt-2 text-sm text-[var(--color-text-primary)]">{post.text}</p>
+              <div className="mt-2 h-32 rounded-xl" style={{ background: `linear-gradient(135deg, ${post.color}30, ${post.color}10)` }} />
+              <div className="mt-2 flex gap-4 text-sm text-[var(--color-text-secondary)]">
+                <span>❤️ {post.likes}</span><span>💬 12</span><span>↗ Share</span>
+              </div>
             </div>
-            <p className="mt-2 text-sm text-[var(--color-text-primary)]">{post.text}</p>
-            <div className="mt-2 h-32 rounded-xl" style={{ background: `linear-gradient(135deg, ${post.color}30, ${post.color}10)` }} />
-            <div className="mt-2 flex gap-4 text-sm text-[var(--color-text-secondary)]">
-              <span>❤️ {post.likes}</span><span>💬 12</span><span>↗ Share</span>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </PhoneFrame>
   )
