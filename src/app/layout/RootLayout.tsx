@@ -3,10 +3,46 @@ import { Sidebar } from './Sidebar'
 import { ScrollProgress } from './ScrollProgress'
 import { ThemeSwitcher } from '@/design-system/theme/ThemeSwitcher'
 import { useTheme } from '@/design-system/theme/ThemeProvider'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { NavLink } from 'react-router-dom'
+import {
+  Home, Type, Sparkles, LayoutGrid, Box,
+} from 'lucide-react'
+
+const navItems = [
+  { path: '/', label: 'Home', icon: Home },
+  { path: '/typography', label: 'Type', icon: Type },
+  { path: '/animations', label: 'Anim', icon: Sparkles },
+  { path: '/layouts', label: 'Grid', icon: LayoutGrid },
+  { path: '/3d', label: '3D', icon: Box },
+]
+
+function MobileBottomNav() {
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-[var(--color-border)] bg-[var(--color-surface)] md:hidden">
+      <div className="flex items-center justify-around py-2">
+        {navItems.map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.path}
+            className={({ isActive }) =>
+              `flex flex-col items-center gap-0.5 px-2 py-1 text-[10px] transition-colors ${
+                isActive ? 'text-[var(--color-accent)]' : 'text-[var(--color-text-muted)]'
+              }`
+            }
+          >
+            <item.icon size={18} />
+            <span>{item.label}</span>
+          </NavLink>
+        ))}
+      </div>
+    </nav>
+  )
+}
 
 export function RootLayout() {
   const { colors } = useTheme()
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     const root = document.documentElement
@@ -21,16 +57,26 @@ export function RootLayout() {
     root.style.backgroundColor = colors.bg
   }, [colors])
 
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+
   return (
     <div className="min-h-screen" style={{ background: colors.bg, color: colors.textPrimary }}>
       <ScrollProgress />
-      <Sidebar />
-      <main className="ml-[240px] min-h-screen transition-all duration-300">
-        <div className="fixed right-6 top-4 z-40">
+      {/* Desktop: sidebar | Mobile: hidden */}
+      {!isMobile && <Sidebar />}
+      <main className={`min-h-screen transition-all duration-300 pb-20 md:pb-0 ${isMobile ? '' : 'ml-[240px]'}`}>
+        <div className="fixed right-4 top-3 z-40 md:right-6 md:top-4">
           <ThemeSwitcher />
         </div>
         <Outlet />
       </main>
+      {/* Mobile bottom nav */}
+      <MobileBottomNav />
     </div>
   )
 }
