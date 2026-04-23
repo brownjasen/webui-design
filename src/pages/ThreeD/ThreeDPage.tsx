@@ -627,9 +627,9 @@ function MaterialShowcase() {
           <directionalLight position={[5, 5, 5]} intensity={1.2} />
           <directionalLight position={[-3, 2, -4]} intensity={0.5} color="#818cf8" />
           <pointLight position={[0, -3, 3]} intensity={0.5} color="#00d4ff" />
-          <motion.div animate={{ scale: isTransitioning ? 0.92 : 1 }} transition={{ duration: 0.2 }}>
+          <group scale={isTransitioning ? 0.92 : 1}>
             <MaterialSphere materialType={displayMaterial} />
-          </motion.div>
+          </group>
           <OrbitControls enableZoom={false} enablePan={false} />
         </Canvas>
       </div>
