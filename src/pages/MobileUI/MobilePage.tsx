@@ -17,7 +17,7 @@ function PhoneFrame({ children }: { children: React.ReactNode }) {
       <div className="flex justify-center bg-[var(--color-surface-2)] px-6 pt-3 pb-1">
         <div className="h-5 w-24 rounded-full bg-[var(--color-border)]" />
       </div>
-      <div className="h-[540px] overflow-y-auto">{children}</div>
+      <div className="relative h-[540px] overflow-hidden">{children}</div>
       {/* Home indicator */}
       <div className="flex justify-center bg-[var(--color-surface-2)] py-2">
         <div className="h-1 w-24 rounded-full bg-[var(--color-border)]" />
@@ -49,32 +49,33 @@ function ChatUI() {
 
   return (
     <PhoneFrame>
-      {/* Header */}
-      <div className="flex items-center gap-3 border-b border-[var(--color-border)] px-4 py-3">
-        <div className="h-8 w-8 rounded-full bg-[var(--color-accent)]/20" />
-        <div>
-          <div className="text-sm font-semibold text-[var(--color-text-primary)]">Alex Chen</div>
-          <div className="text-xs text-green-500">Online</div>
+      <div className="flex h-full flex-col bg-white">
+        <div className="flex items-center gap-3 border-b border-[var(--color-border)] px-4 py-3">
+          <div className="h-8 w-8 rounded-full bg-[var(--color-accent)]/20" />
+          <div>
+            <div className="text-sm font-semibold text-[var(--color-text-primary)]">Alex Chen</div>
+            <div className="text-xs text-green-500">Online</div>
+          </div>
+          <div className="ml-auto flex gap-3 text-[var(--color-text-muted)]">📞⋮</div>
         </div>
-        <div className="ml-auto flex gap-3 text-[var(--color-text-muted)]">📞⋮</div>
-      </div>
-      {/* Messages */}
-      <div className="space-y-3 p-4">
-        {messages.map((m, i) => (
-          <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-            className={`flex ${m.from === 'me' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${m.from === 'me' ? 'bg-[var(--color-accent)] text-white' : 'bg-[var(--color-surface-2)] text-[var(--color-text-primary)]'}`}>
-              {m.text}
-              <div className={`mt-1 text-[10px] ${m.from === 'me' ? 'text-white/60' : 'text-[var(--color-text-muted)]'}`}>{m.time}</div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-      {/* Input */}
-      <div className="absolute bottom-16 flex w-[320px] items-center gap-2 border-t border-[var(--color-border)] bg-white px-4 py-3">
-        <input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && send()}
-          placeholder="Type a message..." className="flex-1 rounded-full bg-[var(--color-surface-2)] px-4 py-2 text-sm outline-none" />
-        <button onClick={send} className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-accent)] text-white text-sm">↑</button>
+        <div className="flex-1 overflow-y-auto p-4">
+          <div className="space-y-3">
+            {messages.map((m, i) => (
+              <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                className={`flex ${m.from === 'me' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${m.from === 'me' ? 'bg-[var(--color-accent)] text-white' : 'bg-[var(--color-surface-2)] text-[var(--color-text-primary)]'}`}>
+                  {m.text}
+                  <div className={`mt-1 text-[10px] ${m.from === 'me' ? 'text-white/60' : 'text-[var(--color-text-muted)]'}`}>{m.time}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+        <div className="flex items-center gap-2 border-t border-[var(--color-border)] bg-white px-4 py-3">
+          <input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && send()}
+            placeholder="Type a message..." className="flex-1 rounded-full bg-[var(--color-surface-2)] px-4 py-2 text-sm outline-none" />
+          <button onClick={send} className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-accent)] text-sm text-white">↑</button>
+        </div>
       </div>
     </PhoneFrame>
   )
@@ -169,33 +170,33 @@ function BottomSheetDemo() {
   const [open, setOpen] = useState(false)
   return (
     <PhoneFrame>
-      <div className="flex flex-col items-center justify-center p-8 pt-16">
-        <p className="text-center text-sm text-[var(--color-text-secondary)] mb-6">Tap the button to open the bottom sheet</p>
+      <div className="relative flex h-full flex-col items-center justify-center overflow-hidden bg-white p-8 pt-16">
+        <p className="mb-6 text-center text-sm text-[var(--color-text-secondary)]">Tap the button to open the bottom sheet</p>
         <button onClick={() => setOpen(true)}
           className="rounded-xl bg-[var(--color-accent)] px-6 py-2.5 text-sm font-medium text-white">
           Open Sheet
         </button>
+        <AnimatePresence>
+          {open && (
+            <>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                onClick={() => setOpen(false)} className="absolute inset-0 z-10 bg-black/20" />
+              <motion.div
+                initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
+                transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                className="absolute bottom-0 left-0 right-0 z-20 rounded-t-3xl bg-white p-6 shadow-xl">
+                <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-[var(--color-border)]" />
+                <h3 className="text-lg font-bold text-[var(--color-text-primary)]">Options</h3>
+                {['Share', 'Save', 'Edit', 'Delete'].map((opt, i) => (
+                  <button key={opt} className={`w-full rounded-xl px-4 py-3 text-left text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-surface-2)] ${i === 3 ? 'text-red-500' : ''}`}>
+                    {opt}
+                  </button>
+                ))}
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
       </div>
-      <AnimatePresence>
-        {open && (
-          <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              onClick={() => setOpen(false)} className="absolute inset-0 bg-black/20" />
-            <motion.div
-              initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="absolute bottom-0 left-0 right-0 rounded-t-3xl bg-white p-6 shadow-xl">
-              <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-[var(--color-border)]" />
-              <h3 className="text-lg font-bold text-[var(--color-text-primary)]">Options</h3>
-              {['Share', 'Save', 'Edit', 'Delete'].map((opt, i) => (
-                <button key={opt} className={`w-full rounded-xl px-4 py-3 text-left text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-surface-2)] ${i === 3 ? 'text-red-500' : ''}`}>
-                  {opt}
-                </button>
-              ))}
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
     </PhoneFrame>
   )
 }
